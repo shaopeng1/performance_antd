@@ -33,7 +33,6 @@ const DescriptionItem = ({ title, content }) => {
     </div>
   );
 };
-// const { status } = this.props;
 
 export default class Drawerjs extends PureComponent {
   state = { visible: false };
@@ -55,7 +54,6 @@ export default class Drawerjs extends PureComponent {
   };
 
   render() {
-    console.log('sssssssssssssssssss' + JSON.stringify(this.props));
     return (
       <div>
         <div className={styles.tableListOperator}>

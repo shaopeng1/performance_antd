@@ -1,31 +1,8 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Select,
-  Icon,
-  Button,
-  Dropdown,
-  TreeSelect,
-  Radio,
-  Menu,
-  InputNumber,
-  DatePicker,
-  Modal,
-  message,
-  Badge,
-  Divider,
-  Slider,
-  Switch,
-  List,
-  Avatar,
-  Spin,
-  Drawer,
-} from 'antd';
+import {Row,Col,Card,Form,Input,Select,Icon,Button,Dropdown,TreeSelect,Radio,Menu,InputNumber,DatePicker,
+        Modal,message,Badge,Divider,Slider,Switch,List,Avatar,Spin,Drawer,} from 'antd';
 import StandardTable from 'components/StandardTable';
 import { selectAntd } from '../../services/api';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
