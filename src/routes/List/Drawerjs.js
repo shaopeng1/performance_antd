@@ -38,7 +38,7 @@ export default class Drawerjs extends PureComponent {
   state = { visible: false };
 
   constructor(props) {
-    super(props);
+    super(props);  
   }
 
   showDrawer = () => {
@@ -54,6 +54,7 @@ export default class Drawerjs extends PureComponent {
   };
 
   render() {
+    console.log("")
     return (
       <div>
         <div className={styles.tableListOperator}>
