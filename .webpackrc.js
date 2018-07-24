@@ -14,7 +14,9 @@ export default {
     components: path.resolve(__dirname, 'src/components/'),
   },
   ignoreMomentLocale: true,
-  theme: './src/theme.js',
+  theme: {
+     "primary-color": "#7546c9",
+   },
   html: {
     template: './src/index.ejs',
   },

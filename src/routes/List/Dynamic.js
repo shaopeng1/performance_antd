@@ -20,7 +20,7 @@ const RadioGroup = Radio.Group;
 const status = ['异常', '运行中'];
 const statusMap = ['error', 'success'];
 
-const fakeDataUrl = 'http://127.0.0.1:8088/api/ANTDList';
+const fakeDataUrl = 'http://10.8.57.211:8088/api/ANTDList';
 
 const children = [];
 for (let i = 10; i < 36; i++) {

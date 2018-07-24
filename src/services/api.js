@@ -41,7 +41,7 @@ export async function fakeSubmitForm(params) {
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 export async function probSource() {
-  return request('http://127.0.0.1:8088/api/hello', {
+  return request('http://10.8.57.211:8088/api/hello', {
     method: 'GET',
     dataType: 'jsonp',
   });
@@ -57,21 +57,21 @@ export async function probSource() {
 
 export async function UserLogin(params) {
   // console.log("dddddddddddddd"+JSON.stringify(params))
-  return request('http://127.0.0.1:8088/api/userlogin', {
+  return request('http://10.8.57.211:8088/api/userlogin', {
     method: 'POST',
     body: params,
   });
 }
 
 export async function selectAntd() {
-  return request('http://127.0.0.1:8088/api/ANTDList', {
+  return request('http://10.8.57.211:8088/api/ANTDList', {
     method: 'POST',
   });
 }
 
 export async function submitantd(params) {
   console.log('params' + JSON.stringify(params));
-  return request('http://127.0.0.1:8088/api/addANTD', {
+  return request('http://10.8.57.211:8088/api/addANTD', {
     method: 'POST',
     body: params,
   });
@@ -79,21 +79,21 @@ export async function submitantd(params) {
 
 export async function addANTD(params) {
   // console.log("params"+JSON.stringify(params))
-  return request('http://127.0.0.1:8088/api/addANTD', {
+  return request('http://10.8.57.211:8088/api/addANTD', {
     method: 'POST',
     body: params,
   });
 }
 
 export async function removeAntd(params) {
-  return request('http://127.0.0.1:8088/api/removeAntd', {
+  return request('http://10.8.57.211:8088/api/removeAntd', {
     method: 'POST',
     body: params,
   });
 }
 
 export async function tubiao(params) {
-  return request('http://127.0.0.1:8088/api/tubiao', {
+  return request('http://10.8.57.211:8088/api/tubiao', {
     method: 'POST',
     dataType: 'jsonp',
   });
