@@ -156,7 +156,7 @@ export default class Analysis extends Component {
         ],
         series: [
           {
-            name: '张三',
+            name: '基站1',
             type: 'bar',
             data: result.values2,
             itemStyle: {
@@ -172,7 +172,7 @@ export default class Analysis extends Component {
             },
           },
           {
-            name: '李四',
+            name: '基站2',
             type: 'bar',
             data: result.values,
             itemStyle: {

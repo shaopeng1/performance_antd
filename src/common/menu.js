@@ -12,10 +12,12 @@ const menuData = [
       },
       {
         name: '监控页',
+        authority: 'admin',
         path: 'monitor',
       },
       {
         name: '工作台',
+        authority: 'user',
         path: 'workplace',
         // hideInBreadcrumb: true,
         // hideInMenu: true,
@@ -37,7 +39,6 @@ const menuData = [
       },
       {
         name: '高级表单',
-        authority: 'admin',
         path: 'advanced-form',
       },
     ],
@@ -57,6 +58,7 @@ const menuData = [
       },
       {
         name: '动态加载表单',
+        authority: 'user2',
         path: 'dynamic-list',
       },
       {

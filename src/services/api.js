@@ -99,6 +99,14 @@ export async function tubiao(params) {
   });
 }
 
+export async function fakeAccountLogin(params) {
+  return request('http://10.8.57.211:8088/api/fakeAccountLogin', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 
 export async function fakeChartData() {
@@ -121,12 +129,12 @@ export async function queryFakeList(params) {
   return request(`/api/fake_list?${stringify(params)}`);
 }
 
-export async function fakeAccountLogin(params) {
+/*export async function fakeAccountLogin(params) {
   return request('/api/login/account', {
     method: 'POST',
     body: params,
   });
-}
+}*/
 
 export async function fakeRegister(params) {
   return request('/api/register', {
