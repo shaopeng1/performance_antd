@@ -7,9 +7,9 @@ export default {
   ],
   proxy:{
     '/api':{
-      target:'http://127.0.0.1:8080/ENMS-web-main',
+      target:'http://127.0.0.1:8080/gsonin',
       changeOrigin : true,
-      pathRewrite :{'^/ENMS-web-main/api':''}
+      pathRewrite :{'^/gsonin/api':''}
     }
   },
   env: {
