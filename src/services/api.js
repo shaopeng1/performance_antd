@@ -93,8 +93,8 @@ export async function removeAntd(params) {
 }
 
 export async function tubiao(params) {
-  return request('http://10.8.57.211:8088/api/tubiao', {
-    method: 'POST',
+  return request('/api/tubiao', {
+    method: 'GET',
     dataType: 'jsonp',
   });
 }
@@ -105,6 +105,18 @@ export async function fakeAccountLogin(params) {
     body: params,
   });
 }
+
+//获取交换
+export async function changeNeTypeNew(params) {
+  console.log("params"+JSON.stringify(params));
+  return request('/api/changeType', {
+    method: 'POST', 
+    body: params, 
+  });
+}
+
+// export default {'GET /ENMS-web-main/*': 'http://127.0.0.1:8080/'}
+// export default {'GET /ENMS-web-main/api*': 'http://127.0.0.1:8080/'}
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
