@@ -1,35 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import {
-  Row,
-  Col,
-  Icon,
-  Card,
-  Tabs,
-  Table,
-  Radio,
-  Select,
-  DatePicker,
-  Tooltip,
-  Menu,
-  Dropdown,
-} from 'antd';
+import {Row,Col,Icon,Card,Tabs,Table,Radio,Select,DatePicker,Tooltip,Menu,Dropdown,} from 'antd';
 import numeral from 'numeral';
-import {
-  ChartCard,
-  yuan,
-  WaterWave,
-  MiniArea,
-  MiniBar,
-  MiniProgress,
-  Field,
-  Gauge,
-  Bar,
-  Pie,
-  TimelineChart,
-} from 'components/Charts';
+import {ChartCard,yuan,WaterWave,MiniArea,MiniBar,MiniProgress,Field,Gauge,Bar,Pie,TimelineChart,} from 'components/Charts';
 import Trend from 'components/Trend';
-import { probSource, tubiao } from '../../services/api';
+import { probSource, tubiao,changeNeTypeNew } from '../../services/api';
 import NumberInfo from 'components/NumberInfo';
 // 引入 ECharts 主模块
 import echarts from 'echarts/lib/echarts';
@@ -48,10 +23,14 @@ import { getTimeDistance } from '../../utils/utils';
 import styles from './Analysis.less';
 
 const { TabPane } = Tabs;
+const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
 const rankingListData = [];
 const ceshiData = [];
+const salesExtra = [];
+const salesExtraOption = [];//指标集
+const salesBS = [];//基站
 for (let i = 0; i < 7; i += 1) {
   rankingListData.push({
     title: `交换中心 ${i}`,
@@ -72,184 +51,102 @@ const Yuan = ({ children }) => (
 export default class Analysis extends Component {
   state = {
     salesType: 'all',
+    maxGroupData :'',//最大组注册数
     currentTabKey: '',
+    selectDate :'',
     rangePickerValue: getTimeDistance('year'),
   };
 
-  componentDidMount() {
-    this.promise = probSource({}).then(result => {
-      for (let i = 0; i < result.x.length; i++) {
-        ceshiData.push({
-          x: result.x[i],
-          y: result.y[i],
-        });
-      }
-    });
-    this.echarts1();
-    this.tubiao();
+  loop =(data)=>{
+      salesExtraOption.splice(0,salesExtraOption.length);
+    for(let i = 0; i<data.length; i++){
+      salesExtraOption.push(
+        <Option value = {data[i].indexSetId}> {data[i].indexSetName} </Option>
+      )
+    }
+    return salesExtraOption;
   }
 
-  tubiao = () => {
-    /*  */
-    var myChart = echarts.init(document.getElementById('main2'));
-    this.promise = tubiao({}).then(result => {
-      myChart.setOption({
-        tooltip: {
-          trigger: 'axis',
-        },
-        legend: {},
-        toolbox: {
-          show: true,
-          feature: {
-            dataView: { show: true, reasOnly: false },
-            magicType: { show: true, type: ['line', 'bar'] },
-            restore: { show: true },
-            saveAsImage: { show: true },
-          },
-        },
-        dataZoom: [
-          {
-            type: 'slider',
-          },
-          {
-            type: 'inside',
-          },
-          {
-            type: 'slider',
-            yAxisIndex: [0],
-            left: '93%',
-          },
-          {
-            type: 'inside',
-            yAxisIndex: [0],
-          },
-        ],
-        xAxis: {
-          data: [],
-        },
-        yAxis: {
-          splitLine: {
-            show: false,
-          }, //去除网格线
-          name: '',
-        },
-      });
-      myChart.showLoading(); //数据加载完之前先显示一段简单的loading动画
-      var option = {
-        tooltip: {
-          show: true,
-        },
-        legend: {
-          data: ['销量'],
-        },
-        xAxis: [
-          {
-            type: 'category',
-            data: result.categories,
-          },
-        ],
+  loopBS =(data)=>{
+      salesBS.splice(0,salesBS.length);
+    for(let i = 0; i<data.length; i++){
+      salesBS.push(
+        <Option value = {data[i].id}> {data[i].name} </Option>
+      )
+    }
+    return salesBS;
+  }
 
-        yAxis: [
-          {
-            type: 'value',
-          },
-        ],
-        series: [
-          {
-            name: '基站1',
-            type: 'bar',
-            data: result.values2,
-            itemStyle: {
-              normal: {
-                color: '#329fff',
-              },
-            },
-            markPoint: {
-              data: [{ type: 'max', name: '最大值' }, { type: 'min', name: '最小值' }],
-            },
-            markLine: {
-              data: [{ type: 'average', name: '平均值' }],
-            },
-          },
-          {
-            name: '基站2',
-            type: 'bar',
-            data: result.values,
-            itemStyle: {
-              normal: {
-                color: '#8e44ad',
-              },
-            },
-            markPoint: {
-              data: [{ type: 'max', name: '最大值' }, { type: 'min', name: '最小值' }],
-            },
-            markLine: {
-              data: [{ type: 'average', name: '平均值' }],
-            },
-          },
-        ],
-      };
-      myChart.hideLoading();
-      myChart.setOption(option);
-    });
-  };
+  componentDidMount() {
+    this.netype("1")
+  } 
 
-  echarts1 = () => {
-    var myChart = echarts.init(document.getElementById('main'));
-    myChart.setOption({
-      title: { text: '信道排队数量' },
-      tooltip: {},
-      xAxis: {
-        data: ['2018', '2017', '2016', '2015', '2014', '2013'],
-      },
-      yAxis: {},
-      series: [
-        {
-          name: '',
-          type: 'bar',
-          data: [5, 20, 36, 10, 10, 20],
-        },
-      ],
-    });
-  };
+//选择对象类型时调用
+  netype = e =>{
+    this.promise = changeNeTypeNew({'neType' : e}).then(result => {
+      let res = JSON.parse(result);
+      let idName = res.idName;
+      let indexSet = res.indexSet;
 
-  echarts2 = () => {
-    var myChart = echarts.init(document.getElementById('main'));
-    myChart.setOption({
-      title: { text: '最大用户注册数' },
-      tooltip: {},
-      xAxis: {
-        data: ['2018', '2017', '2016', '2015', '2014', '2013'],
-      },
-      yAxis: {},
-      series: [
-        {
-          name: '',
-          type: 'bar',
-          data: [25, 20, 136, 12, 99, 145],
-        },
-      ],
-    });
-  };
+     ceshiData.splice(0,ceshiData.length);
+      for (let i = 0; i < res.x.length; i++) {
+        ceshiData.push({
+          x: res.x[i],
+          y: res.y[i],
+        });
+      }
 
-  echarts3 = () => {
-    var myChart = echarts.init(document.getElementById('main'));
-    myChart.setOption({
-      title: { text: '有效呼叫总户数' },
-      tooltip: {},
-      xAxis: {
-        data: ['2018', '2017', '2016', '2015', '2014', '2013'],
-      },
-      yAxis: {},
-      series: [
-        {
-          name: '',
-          type: 'bar',
-          data: [5, 20, 36, 10, 10, 20],
-        },
-      ],
+      if (idName.length > 0) {
+        this.loop(indexSet)//<OPTIOn>列表
+        this.loopBS(idName)//<OPTIOn>列表
+        salesExtra.splice(0,salesExtra.length);
+        salesExtra.push(
+          <div className={styles.salesExtraWrap}>
+            <div className={styles.salesExtra}>
+              <Select defaultValue="1" style={{ width: 120 }} onChange = {this.netype}>
+                <Option value="1">交换中心</Option>
+                <Option value="2">基站</Option>
+                <Option value="3">调度</Option>
+                <Option value="5">通话组</Option>
+                <Option value="6">用户</Option>
+                <Option value="7">虚拟专网</Option>
+              </Select> 
+            </div>
+            
+          <div className={styles.salesExtra}>
+            <Select defaultValue="0" style={{ width: 120 }}>
+              <Option value="0">5分钟</Option>
+              <Option value="1">60分钟</Option>
+              <Option value="2">每天</Option>
+              <Option value="3">周</Option>
+              <Option value="4">月</Option>
+            </Select>
+          </div>
+         
+          <div className={styles.salesExtra}>
+            <Select defaultValue= {indexSet[0].indexSetId} style={{ width: 180 }}>
+            {
+              salesExtraOption
+            }
+            </Select>
+          </div>
+
+          <div className={styles.salesExtra}>
+            <Select defaultValue= {idName[0].id} style={{ width: 120 }}>
+            {
+              salesBS
+            }
+            </Select>
+          </div>
+        </div>
+        )
+        this.setState({
+          selectDate:salesExtra,
+          maxGroupData:ceshiData,
+        })
+      }
     });
-  };
+  }
 
   callback = key => {
     switch (key) {
@@ -297,7 +194,7 @@ export default class Analysis extends Component {
     });
   };
 
-  selectDate = type => {
+  /*selectDate = type => {
     this.setState({
       rangePickerValue: getTimeDistance(type),
     });
@@ -305,7 +202,7 @@ export default class Analysis extends Component {
     this.props.dispatch({
       type: 'chart/fetchSalesData',
     });
-  };
+  };*/
 
   isActive(type) {
     const { rangePickerValue } = this.state;
@@ -322,6 +219,9 @@ export default class Analysis extends Component {
   }
 
   render() {
+
+    console.log("sssssssssssssssssssss"+JSON.stringify(this.state.maxGroupData))
+
     const salesData = [];
     for (let i = 0; i < 12; i += 1) {
       salesData.push({
@@ -362,30 +262,6 @@ export default class Analysis extends Component {
       </span>
     );
 
-    const salesExtra = (
-      <div className={styles.salesExtraWrap}>
-        <div className={styles.salesExtra}>
-          <Select defaultValue="lucy" style={{ width: 120 }}>
-            <Option value="jack">交换001</Option>
-            <Option value="lucy">交换002</Option>
-            <Option value="disabled" disabled>
-              交换003
-            </Option>
-            <Option value="Yiminghe">交换004</Option>
-          </Select>
-        </div>
-        <Select defaultValue="lucy" style={{ width: 120 }}>
-          <Option value="jack">交换</Option>
-          <Option value="lucy">基站</Option>
-          <Option value="disabled" disabled>
-            调度
-          </Option>
-          <Option value="Yiminghe">通话组</Option>
-          <Option value="Yiminghe">用户</Option>
-          <Option value="Yiminghe">虚拟专网</Option>
-        </Select>
-      </div>
-    );
 
     const columns = [
       {
@@ -525,12 +401,12 @@ export default class Analysis extends Component {
 
         <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.salesCard}>
-            <Tabs tabBarExtraContent={salesExtra} size="large" tabBarStyle={{ marginBottom: 24 }}>
+            <Tabs tabBarExtraContent={this.state.selectDate} size="large" tabBarStyle={{ marginBottom: 24 }}>
               <TabPane tab="最大组注册数" key="sales">
                 <Row>
                   <Col xl={16} lg={12} md={12} sm={24} xs={24}>
                     <div className={styles.salesBar}>
-                      <Bar height={295} title="最大组注册数统计" data={ceshiData} />
+                      <Bar height={295} title="最大组注册数统计" data={this.state.maxGroupData} />
                     </div>
                   </Col>
                   <Col xl={6} lg={12} md={12} sm={24} xs={24}>
